@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const Student = require('../models/Student');
+const Student = require('../models/student');
 
-// Create student
+// ✅ Create student
 router.post('/', async (req, res) => {
   try {
     const student = new Student(req.body);
@@ -13,19 +13,19 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Get all students
+// ✅ Get all students
 router.get('/', async (req, res) => {
   const students = await Student.find();
   res.send(students);
 });
 
-// Get single student by ID
+// ✅ Get single student by ID
 router.get('/:id', async (req, res) => {
   const student = await Student.findById(req.params.id);
   res.send(student);
 });
 
-// ✅ DELETE student by ID
+// ✅ Delete student by ID
 router.delete('/:id', async (req, res) => {
   try {
     const result = await Student.findByIdAndDelete(req.params.id);
@@ -36,6 +36,20 @@ router.delete('/:id', async (req, res) => {
   } catch (error) {
     console.error('Error deleting student:', error);
     res.status(500).json({ error: 'Failed to delete student' });
+  }
+});
+
+// ✅ Update student by ID
+router.put('/:id', async (req, res) => {
+  try {
+    const updatedStudent = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedStudent) {
+      return res.status(404).json({ error: 'Student not found' });
+    }
+    res.json(updatedStudent);
+  } catch (err) {
+    console.error('Error updating student:', err);
+    res.status(500).json({ error: 'Failed to update student' });
   }
 });
 
